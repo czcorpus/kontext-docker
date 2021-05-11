@@ -1,4 +1,4 @@
-version: "3.7"
+version: '3.7'
 
 services:
   kontext:
@@ -10,14 +10,16 @@ services:
     environment:
       - STATUS_SERVICE_URL=${STATUS_SERVICE_URL}
     volumes:
-      - ./conf/config.default.xml:/opt/kontext/conf/config.xml
+      - ./conf/config.mysql.xml:/opt/kontext/conf/config.xml
       - files:/opt/kontext/public/share
       - corpora:/var/local/corpora
     networks:
       - redis
+      - mariadb
       - kontext
     depends_on: 
       - redis
+      - mariadb
 
   rq-scheduler:
     image: czcorpus/kontext-rqscheduler
@@ -31,24 +33,28 @@ services:
   rq-worker:
     image: czcorpus/kontext-rqworker
     volumes:
-      - ./conf/config.default.xml:/opt/kontext/conf/config.xml
+      - ./conf/config.mysql.xml:/opt/kontext/conf/config.xml
       - corpora:/var/local/corpora
     networks:
       - redis
+      - mariadb
     depends_on:
       - redis
+      - mariadb
       - kontext
 
   ws:
     image: czcorpus/kontext-ws
     volumes:
-      - ./conf/config.default.xml:/opt/kontext/conf/config.xml
+      - ./conf/config.mysql.xml:/opt/kontext/conf/config.xml
       - corpora:/var/local/corpora
     networks:
       - redis
+      - mariadb
       - kontext
     depends_on: 
       - redis
+      - mariadb
       - kontext
 
   redis:
@@ -72,12 +78,29 @@ services:
     depends_on:
       - kontext
       - ws
+  
+  mariadb:
+    image: mariadb:latest
+    volumes:
+      - ./conf/mariadb:/docker-entrypoint-initdb.d
+      - mdbdata:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=kontext
+      - MYSQL_USER=kontext
+      - MYSQL_PASSWORD=password
+    networks:
+      - mariadb
 
 volumes:
   files: {}
   corpora: {}
+  mdbdata: {}
   redisdata: {}
 
 networks:
   redis: {}
+  mariadb: {}
   kontext: {}
