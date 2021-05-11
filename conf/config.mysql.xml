@@ -84,13 +84,12 @@
     <plugins>
         <application_bar/>
         <auth>
-            <module>default_auth</module>
+            <module>mysql_auth</module>
             <js_module>defaultAuth</js_module>
-            <anonymous_user_id>0</anonymous_user_id>
             <auth_cookie_name>kontext_session</auth_cookie_name>
-            <login_url>/user/login?continue=%s</login_url>
-            <logout_url>/user/logout?continue=%s</logout_url>
-            <confirmation_token_ttl>3600</confirmation_token_ttl>
+            <anonymous_user_id>1</anonymous_user_id>
+            <login_url>/user/login</login_url>
+            <logout_url>/user/logoutx</logout_url>
         </auth>
         <action_log>
             <module>default_action_log</module>
@@ -100,18 +99,20 @@
             <cache_dir extension-by="default">/var/local/corpora/cache</cache_dir>
         </conc_cache>
         <query_persistence>
-            <module>default_query_persistence</module>
+            <module>mysql_query_persistence</module>
             <ttl_days extension-by="default">100</ttl_days>
-            <archive_dir extension-by="default">/var/local/corpora/query_persistence</archive_dir>
+            <archive_dir extension-by="default">/var/local/corpora/conc_persistence</archive_dir>
+            <archive_db_path extension-by="ucnk">/opt/kontext/conc_archive.db</archive_db_path>
+            <archive_queue_key>arch</archive_queue_key>
         </query_persistence>
         <corparch>
-            <module>default_corparch</module>
-            <js_module>defaultCorparch</js_module>
-            <file extension-by="default">/opt/kontext/conf/corplist.xml</file>
-            <root_elm_path extension-by="default">/corplist</root_elm_path>
-            <tag_prefix extension-by="default">+</tag_prefix>
-            <max_num_hints extension-by="default">10</max_num_hints>
-            <default_page_list_size extension-by="default">30</default_page_list_size>
+            <module>mysql_corparch</module>
+            <js_module>ucnkCorparch</js_module>
+            <tag_prefix>+</tag_prefix>
+            <max_num_hints>10</max_num_hints>
+            <max_num_favorites>5</max_num_favorites>
+            <default_page_list_size>30</default_page_list_size>
+            <default_label>czech</default_label>
         </corparch>
         <db>
             <module>redis_db</module>
@@ -120,9 +121,14 @@
             <id extension-by="default">1</id>
         </db>
         <integration_db>
-            <module>default_integration_db</module>
-            <!-- default plugin provides a "null" integration database; please keep this setting
-            unless you want to include your own integration database -->
+            <module>mysql_integration_db</module>
+            <host>kontext_mariadb_1</host>
+            <db>kontext</db>
+            <user>kontext</user>
+            <passwd>password</passwd>
+            <pool_size>3</pool_size>
+            <retry_delay>2</retry_delay>
+            <retry_attempts>5</retry_attempts>
         </integration_db>
         <export>
             <csv>default_csv</csv>
