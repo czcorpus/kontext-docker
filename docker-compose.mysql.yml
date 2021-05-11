@@ -17,7 +17,7 @@ services:
       - redis
       - mariadb
       - kontext
-    depends_on: 
+    depends_on:
       - redis
       - mariadb
 
@@ -26,7 +26,7 @@ services:
     command: rqscheduler --host kontext_redis_1 --db 2 -i 10
     networks:
       - redis
-    depends_on: 
+    depends_on:
       - redis
       - kontext
 
@@ -52,7 +52,7 @@ services:
       - redis
       - mariadb
       - kontext
-    depends_on: 
+    depends_on:
       - redis
       - mariadb
       - kontext
@@ -78,19 +78,13 @@ services:
     depends_on:
       - kontext
       - ws
-  
+
   mariadb:
-    image: mariadb:latest
+    image: czcorpus/kontext-mariadb
     volumes:
-      - ./conf/mariadb:/docker-entrypoint-initdb.d
       - mdbdata:/var/lib/mysql
     ports:
       - "3306:3306"
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=kontext
-      - MYSQL_USER=kontext
-      - MYSQL_PASSWORD=password
     networks:
       - mariadb
 
