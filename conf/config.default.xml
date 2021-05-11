@@ -41,7 +41,7 @@
     <calc_backend>
         <type>rq</type>
         <task_time_limit>300</task_time_limit>
-        <rq_redis_host>kontext-docker_redis_1</rq_redis_host>
+        <rq_redis_host>kontext_redis_1</rq_redis_host>
         <rq_redis_port>6379</rq_redis_port>
         <rq_redis_db>2</rq_redis_db>
         <rq_log_path>/var/log/rq/worker.log</rq_log_path>
@@ -115,7 +115,7 @@
         </corparch>
         <db>
             <module>redis_db</module>
-            <host extension-by="default">kontext-docker_redis_1</host>
+            <host extension-by="default">kontext_redis_1</host>
             <port extension-by="default">6379</port>
             <id extension-by="default">1</id>
         </db>

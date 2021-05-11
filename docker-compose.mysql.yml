@@ -23,7 +23,7 @@ services:
 
   rq-scheduler:
     image: czcorpus/kontext-rqscheduler
-    command: rqscheduler --host kontext-docker_redis_1 --db 2 -i 10
+    command: rqscheduler --host kontext_redis_1 --db 2 -i 10
     networks:
       - redis
     depends_on: 
