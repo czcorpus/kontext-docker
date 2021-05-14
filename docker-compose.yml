@@ -8,9 +8,9 @@ services:
     # we need to copy files into the shared volume first
     command: bash -c "cp -r /opt/kontext/public/files/* /opt/kontext/public/share && gunicorn -c ./scripts/install/conf/docker/gunicorn-conf.py public.app:application"
     environment:
-      - STATUS_SERVICE_URL=${STATUS_SERVICE_URL}
+      - STATUS_SERVICE_URL=
     volumes:
-      - ./conf/config.default.xml:/opt/kontext/conf/config.xml
+      - ${KONTEXT_CONFIG}:/opt/kontext/conf/config.xml
       - files:/opt/kontext/public/share
       - corpora:/var/local/corpora
     networks:
@@ -31,23 +31,11 @@ services:
   rq-worker:
     image: czcorpus/kontext-rqworker
     volumes:
-      - ./conf/config.default.xml:/opt/kontext/conf/config.xml
+      - ${KONTEXT_CONFIG}:/opt/kontext/conf/config.xml
       - corpora:/var/local/corpora
     networks:
       - redis
     depends_on:
-      - redis
-      - kontext
-
-  ws:
-    image: czcorpus/kontext-ws
-    volumes:
-      - ./conf/config.default.xml:/opt/kontext/conf/config.xml
-      - corpora:/var/local/corpora
-    networks:
-      - redis
-      - kontext
-    depends_on: 
       - redis
       - kontext
 
@@ -65,13 +53,12 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - ./conf/${NGINX_CONF_FILE}:/etc/nginx/conf.d/default.conf
+      - ./conf/nginx.conf:/etc/nginx/conf.d/default.conf
       - files:/opt/kontext/public/files
     networks:
       - kontext
     depends_on:
       - kontext
-      - ws
 
 volumes:
   files: {}
