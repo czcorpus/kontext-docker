@@ -12,9 +12,10 @@ services:
     volumes:
       - ${KONTEXT_CONFIG}:/opt/kontext/conf/config.xml
       - files:/opt/kontext/public/share
-      - corpora:/var/local/corpora
+      - corpora-data:/var/lib/manatee
+      - corpora-cache:/var/local/corpora
     networks:
-      - redis
+      - databases
       - kontext
     depends_on: 
       - redis
@@ -23,18 +24,18 @@ services:
     image: czcorpus/kontext-rqscheduler
     command: rqscheduler --host kontext_redis_1 --db 2 -i 10
     networks:
-      - redis
+      - databases
     depends_on: 
       - redis
-      - kontext
 
   rq-worker:
     image: czcorpus/kontext-rqworker
     volumes:
       - ${KONTEXT_CONFIG}:/opt/kontext/conf/config.xml
-      - corpora:/var/local/corpora
+      - corpora-data:/var/lib/manatee
+      - corpora-cache:/var/local/corpora
     networks:
-      - redis
+      - databases
     depends_on:
       - redis
       - kontext
@@ -42,7 +43,7 @@ services:
   redis:
     image: redis:latest
     networks:
-      - redis
+      - databases
     ports:
       - "16379:6379"
     volumes:
@@ -62,9 +63,10 @@ services:
 
 volumes:
   files: {}
-  corpora: {}
+  corpora-data: {}
+  corpora-cache: {}
   redisdata: {}
 
 networks:
-  redis: {}
+  databases: {}
   kontext: {}
