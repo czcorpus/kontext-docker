@@ -9,11 +9,11 @@ services:
     image: czcorpus/kontext-ws
     volumes:
       - ${KONTEXT_CONFIG}:/opt/kontext/conf/config.xml
-      - corpora:/var/local/corpora
+      - corpora-data:/var/lib/manatee
+      - corpora-cache:/var/local/copora
     networks:
-      - redis
+      - databases
       - kontext
-      - mariadb
     depends_on: 
       - redis
       - kontext
@@ -25,9 +25,9 @@ services:
       - ws
 
 volumes:
-  corpora: {}
+  corpora-data: {}
+  corpora-cache: {}
 
 networks:
-  redis: {}
-  mariadb: {}
+  databases: {}
   kontext: {}
